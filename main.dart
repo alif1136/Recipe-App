@@ -5,25 +5,21 @@ void main() {
   runApp(const MyApp());
 }
 
-// ---------------- APP ROOT ----------------
+// APP ROOT
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Food Recipes',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const RecipeListScreen(),
+      home: RecipeListScreen(),
     );
   }
 }
 
-// ---------------- MODEL ----------------
+// MODEL
 
 class Recipe {
   final String title;
@@ -45,7 +41,7 @@ class Recipe {
   }
 }
 
-// ---------------- JSON DATA ----------------
+// JSON (same as question)
 
 const String recipesJson = '''
 {
@@ -89,7 +85,7 @@ const String recipesJson = '''
 }
 ''';
 
-// ---------------- UI + JSON PARSING ----------------
+//UI + PARSING
 
 class RecipeListScreen extends StatelessWidget {
   const RecipeListScreen({super.key});
@@ -105,20 +101,60 @@ class RecipeListScreen extends StatelessWidget {
     final recipes = _parseRecipes();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Food Recipes'),
-      ),
-      body: ListView.builder(
-        itemCount: recipes.length,
-        itemBuilder: (context, index) {
-          final recipe = recipes[index];
+      // we build the header ourselves to match the screenshot
+      body: Column(
+        children: [
+          // BLUE HEADER BAR (like in the provided UI)
+          Container(
+            width: double.infinity,
+            color: Colors.blue,
+            padding:
+            const EdgeInsets.only(left: 16, right: 16, top: 32, bottom: 12),
+            child: const Text(
+              'Food Recipes',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
 
-          return ListTile(
-            leading: const Icon(Icons.circle, size: 10),
-            title: Text(recipe.title),        // <- recipe title in ListView
-            subtitle: Text(recipe.description),
-          );
-        },
+          // LIST OF RECIPES
+          Expanded(
+            child: ListView.separated(
+              itemCount: recipes.length,
+              separatorBuilder: (context, index) =>
+              const Divider(height: 1, thickness: 0.5),
+              itemBuilder: (context, index) {
+                final recipe = recipes[index];
+
+                return ListTile(
+                  contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16, vertical: 8),
+                  leading: const Icon(
+                    Icons.fastfood, // looks close to the screenshot icon
+                    size: 20,
+                  ),
+                  title: Text(
+                    recipe.title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  subtitle: Text(
+                    recipe.description,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Colors.black54,
+                    ),
+                  ),
+                  dense: true,
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
